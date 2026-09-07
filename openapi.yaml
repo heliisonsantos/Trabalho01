@@ -1,0 +1,532 @@
+openapi: 3.0.0
+
+info:
+  title: API da Biblioteca Escolar
+  version: 1.0.0
+  description: API para gerenciamento de livros, estudantes e empréstimos
+
+servers:
+  - url: http://localhost:3000
+    description: Servidor local
+
+tags:
+  - name: Livros
+    description: Operações relacionadas aos livros
+  - name: Estudantes
+    description: Operações relacionadas aos estudantes
+  - name: Empréstimos
+    description: Operações relacionadas aos empréstimos
+
+paths:
+
+  /:
+    get:
+      summary: Página inicial da API
+      responses:
+        '200':
+          description: API funcionando
+          content:
+            application/json:
+              example:
+                mensagem: Bem-vindo à API da Biblioteca Escolar!
+
+  /livros:
+    get:
+      tags:
+        - Livros
+      summary: Lista todos os livros
+      parameters:
+        - name: titulo
+          in: query
+          schema:
+            type: string
+          description: Busca livros pelo título
+        - name: autor
+          in: query
+          schema:
+            type: string
+          description: Filtra livros pelo autor
+        - name: page
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+          description: Número da página
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            default: 10
+          description: Quantidade de itens por página
+      responses:
+        '200':
+          description: Lista de livros retornada com sucesso
+          content:
+            application/json:
+              example:
+                total: 2
+                page: 1
+                totalPages: 1
+                dados:
+                  - id: 1
+                    titulo: O Pequeno Príncipe
+                    autor: Antoine de Saint-Exupéry
+                  - id: 2
+                    titulo: Dom Casmurro
+                    autor: Machado de Assis
+        '400':
+          description: Dados inválidos
+          content:
+            application/json:
+              example:
+                erro:
+                  codigo: DADOS_INVALIDOS
+                  mensagem: page e limit devem ser números maiores que zero
+
+    post:
+      tags:
+        - Livros
+      summary: Cadastra um novo livro
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              id: 3
+              titulo: A Revolução dos Bichos
+              autor: George Orwell
+      responses:
+        '201':
+          description: Livro criado com sucesso
+          content:
+            application/json:
+              example:
+                id: 3
+                titulo: A Revolução dos Bichos
+                autor: George Orwell
+        '400':
+          description: Dados inválidos
+          content:
+            application/json:
+              example:
+                erro:
+                  codigo: DADOS_INVALIDOS
+                  mensagem: Os campos id, titulo e autor são obrigatórios
+        '409':
+          description: Livro duplicado
+          content:
+            application/json:
+              example:
+                erro:
+                  codigo: RECURSO_DUPLICADO
+                  mensagem: Já existe um livro com este ID
+
+  /livros/{id}:
+    get:
+      tags:
+        - Livros
+      summary: Busca um livro pelo ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+      responses:
+        '200':
+          description: Livro encontrado
+          content:
+            application/json:
+              example:
+                id: 1
+                titulo: O Pequeno Príncipe
+                autor: Antoine de Saint-Exupéry
+        '404':
+          description: Livro não encontrado
+          content:
+            application/json:
+              example:
+                erro:
+                  codigo: RECURSO_NAO_ENCONTRADO
+                  mensagem: Livro não encontrado
+
+    put:
+      tags:
+        - Livros
+      summary: Atualiza completamente um livro
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              titulo: O Pequeno Príncipe - Nova Edição
+              autor: Antoine de Saint-Exupéry
+      responses:
+        '200':
+          description: Livro atualizado
+          content:
+            application/json:
+              example:
+                id: 1
+                titulo: O Pequeno Príncipe - Nova Edição
+                autor: Antoine de Saint-Exupéry
+        '400':
+          description: Dados inválidos
+          content:
+            application/json:
+              example:
+                erro:
+                  codigo: DADOS_INVALIDOS
+                  mensagem: Os campos titulo e autor são obrigatórios
+        '404':
+          description: Livro não encontrado
+          content:
+            application/json:
+              example:
+                erro:
+                  codigo: RECURSO_NAO_ENCONTRADO
+                  mensagem: Livro não encontrado
+
+    patch:
+      tags:
+        - Livros
+      summary: Atualiza parcialmente um livro
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              titulo: O Pequeno Príncipe Atualizado
+      responses:
+        '200':
+          description: Livro atualizado
+          content:
+            application/json:
+              example:
+                id: 1
+                titulo: O Pequeno Príncipe Atualizado
+                autor: Antoine de Saint-Exupéry
+        '400':
+          description: Dados inválidos
+        '404':
+          description: Livro não encontrado
+
+    delete:
+      tags:
+        - Livros
+      summary: Remove um livro
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+      responses:
+        '204':
+          description: Livro removido
+        '404':
+          description: Livro não encontrado
+          content:
+            application/json:
+              example:
+                erro:
+                  codigo: RECURSO_NAO_ENCONTRADO
+                  mensagem: Livro não encontrado
+
+  /estudantes:
+    get:
+      tags:
+        - Estudantes
+      summary: Lista todos os estudantes
+      responses:
+        '200':
+          description: Lista de estudantes
+          content:
+            application/json:
+              example:
+                - id: 1
+                  nome: João Silva
+                  matricula: "2026001"
+                - id: 2
+                  nome: Maria Santos
+                  matricula: "2026002"
+
+    post:
+      tags:
+        - Estudantes
+      summary: Cadastra um novo estudante
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              id: 3
+              nome: Pedro Oliveira
+              matricula: "2026003"
+      responses:
+        '201':
+          description: Estudante criado com sucesso
+        '400':
+          description: Dados inválidos
+        '409':
+          description: Estudante duplicado
+
+  /estudantes/{id}:
+    get:
+      tags:
+        - Estudantes
+      summary: Busca um estudante pelo ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+      responses:
+        '200':
+          description: Estudante encontrado
+        '404':
+          description: Estudante não encontrado
+
+    put:
+      tags:
+        - Estudantes
+      summary: Atualiza completamente um estudante
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              nome: João da Silva
+              matricula: "2026001"
+      responses:
+        '200':
+          description: Estudante atualizado
+        '400':
+          description: Dados inválidos
+        '404':
+          description: Estudante não encontrado
+
+    patch:
+      tags:
+        - Estudantes
+      summary: Atualiza parcialmente um estudante
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              nome: João Silva Atualizado
+      responses:
+        '200':
+          description: Estudante atualizado parcialmente
+        '400':
+          description: Dados inválidos
+        '404':
+          description: Estudante não encontrado
+
+    delete:
+      tags:
+        - Estudantes
+      summary: Remove um estudante
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+      responses:
+        '204':
+          description: Estudante removido
+        '404':
+          description: Estudante não encontrado
+
+  /estudantes/{id}/emprestimos:
+    get:
+      tags:
+        - Empréstimos
+      summary: Lista os empréstimos de um estudante
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+      responses:
+        '200':
+          description: Lista de empréstimos
+          content:
+            application/json:
+              example:
+                - id: 1
+                  livroId: 1
+                  estudanteId: 1
+                  dataEmprestimo: "2026-09-03"
+        '404':
+          description: Estudante não encontrado
+
+  /emprestimos:
+    get:
+      tags:
+        - Empréstimos
+      summary: Lista todos os empréstimos
+      responses:
+        '200':
+          description: Lista de empréstimos
+          content:
+            application/json:
+              example:
+                - id: 1
+                  livroId: 1
+                  estudanteId: 1
+                  dataEmprestimo: "2026-09-03"
+                - id: 2
+                  livroId: 2
+                  estudanteId: 2
+                  dataEmprestimo: "2026-09-03"
+
+    post:
+      tags:
+        - Empréstimos
+      summary: Cria um novo empréstimo
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              id: 3
+              livroId: 1
+              estudanteId: 2
+              dataEmprestimo: "2026-09-06"
+      responses:
+        '201':
+          description: Empréstimo criado
+        '400':
+          description: Dados inválidos
+        '404':
+          description: Livro ou estudante não encontrado
+        '409':
+          description: Empréstimo duplicado
+
+  /emprestimos/{id}:
+    get:
+      tags:
+        - Empréstimos
+      summary: Busca um empréstimo pelo ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+      responses:
+        '200':
+          description: Empréstimo encontrado
+        '404':
+          description: Empréstimo não encontrado
+
+    put:
+      tags:
+        - Empréstimos
+      summary: Atualiza completamente um empréstimo
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              livroId: 2
+              estudanteId: 1
+              dataEmprestimo: "2026-09-06"
+      responses:
+        '200':
+          description: Empréstimo atualizado
+        '400':
+          description: Dados inválidos
+        '404':
+          description: Empréstimo, livro ou estudante não encontrado
+
+    patch:
+      tags:
+        - Empréstimos
+      summary: Atualiza parcialmente um empréstimo
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              dataEmprestimo: "2026-09-07"
+      responses:
+        '200':
+          description: Empréstimo atualizado parcialmente
+        '400':
+          description: Dados inválidos
+        '404':
+          description: Empréstimo, livro ou estudante não encontrado
+
+    delete:
+      tags:
+        - Empréstimos
+      summary: Remove um empréstimo
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+      responses:
+        '204':
+          description: Empréstimo removido
+        '404':
+          description: Empréstimo não encontrado
+```

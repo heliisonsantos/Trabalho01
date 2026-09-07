@@ -1,0 +1,452 @@
+{
+  "info": {
+    "_postman_id": "biblioteca-escolar-api-2026",
+    "name": "API Biblioteca Escolar",
+    "description": "Coleção de testes da API Biblioteca Escolar - Livros, Estudantes e Empréstimos",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000"
+    }
+  ],
+  "item": [
+    {
+      "name": "Livros",
+      "item": [
+        {
+          "name": "GET - Listar livros",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/livros",
+              "host": ["{{baseUrl}}"],
+              "path": ["livros"]
+            }
+          }
+        },
+        {
+          "name": "GET - Listar livros com paginação",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/livros?page=1&limit=1",
+              "host": ["{{baseUrl}}"],
+              "path": ["livros"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "1"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET - Buscar livro por título",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/livros?titulo=Pequeno",
+              "host": ["{{baseUrl}}"],
+              "path": ["livros"],
+              "query": [
+                {
+                  "key": "titulo",
+                  "value": "Pequeno"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET - Filtrar livro por autor",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/livros?autor=Machado",
+              "host": ["{{baseUrl}}"],
+              "path": ["livros"],
+              "query": [
+                {
+                  "key": "autor",
+                  "value": "Machado"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET - Buscar livro por ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/livros/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["livros", "1"]
+            }
+          }
+        },
+        {
+          "name": "POST - Criar livro",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": 3,\n  \"titulo\": \"1984\",\n  \"autor\": \"George Orwell\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/livros",
+              "host": ["{{baseUrl}}"],
+              "path": ["livros"]
+            }
+          }
+        },
+        {
+          "name": "PUT - Atualizar livro",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"titulo\": \"O Pequeno Príncipe - Nova Edição\",\n  \"autor\": \"Antoine de Saint-Exupéry\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/livros/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["livros", "1"]
+            }
+          }
+        },
+        {
+          "name": "PATCH - Atualizar parcialmente livro",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"titulo\": \"O Pequeno Príncipe Atualizado\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/livros/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["livros", "1"]
+            }
+          }
+        },
+        {
+          "name": "DELETE - Remover livro",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/livros/2",
+              "host": ["{{baseUrl}}"],
+              "path": ["livros", "2"]
+            }
+          }
+        },
+        {
+          "name": "ERRO 404 - Livro inexistente",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/livros/999",
+              "host": ["{{baseUrl}}"],
+              "path": ["livros", "999"]
+            }
+          }
+        },
+        {
+          "name": "ERRO 400 - Livro inválido",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": \"abc\",\n  \"titulo\": 123\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/livros",
+              "host": ["{{baseUrl}}"],
+              "path": ["livros"]
+            }
+          }
+        },
+        {
+          "name": "ERRO 409 - Livro duplicado",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": 1,\n  \"titulo\": \"Livro Duplicado\",\n  \"autor\": \"Autor\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/livros",
+              "host": ["{{baseUrl}}"],
+              "path": ["livros"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Estudantes",
+      "item": [
+        {
+          "name": "GET - Listar estudantes",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/estudantes",
+              "host": ["{{baseUrl}}"],
+              "path": ["estudantes"]
+            }
+          }
+        },
+        {
+          "name": "GET - Buscar estudante por ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/estudantes/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["estudantes", "1"]
+            }
+          }
+        },
+        {
+          "name": "POST - Criar estudante",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": 3,\n  \"nome\": \"Pedro Oliveira\",\n  \"matricula\": \"2026003\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/estudantes",
+              "host": ["{{baseUrl}}"],
+              "path": ["estudantes"]
+            }
+          }
+        },
+        {
+          "name": "PUT - Atualizar estudante",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"João da Silva\",\n  \"matricula\": \"2026001\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/estudantes/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["estudantes", "1"]
+            }
+          }
+        },
+        {
+          "name": "PATCH - Atualizar parcialmente estudante",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"João Silva Atualizado\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/estudantes/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["estudantes", "1"]
+            }
+          }
+        },
+        {
+          "name": "DELETE - Remover estudante",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/estudantes/2",
+              "host": ["{{baseUrl}}"],
+              "path": ["estudantes", "2"]
+            }
+          }
+        },
+        {
+          "name": "GET - Empréstimos de um estudante",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/estudantes/1/emprestimos",
+              "host": ["{{baseUrl}}"],
+              "path": ["estudantes", "1", "emprestimos"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Empréstimos",
+      "item": [
+        {
+          "name": "GET - Listar empréstimos",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/emprestimos",
+              "host": ["{{baseUrl}}"],
+              "path": ["emprestimos"]
+            }
+          }
+        },
+        {
+          "name": "GET - Buscar empréstimo por ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/emprestimos/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["emprestimos", "1"]
+            }
+          }
+        },
+        {
+          "name": "POST - Criar empréstimo",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": 3,\n  \"livroId\": 1,\n  \"estudanteId\": 1,\n  \"dataEmprestimo\": \"2026-09-06\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/emprestimos",
+              "host": ["{{baseUrl}}"],
+              "path": ["emprestimos"]
+            }
+          }
+        },
+        {
+          "name": "PUT - Atualizar empréstimo",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"livroId\": 1,\n  \"estudanteId\": 1,\n  \"dataEmprestimo\": \"2026-09-07\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/emprestimos/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["emprestimos", "1"]
+            }
+          }
+        },
+        {
+          "name": "PATCH - Atualizar parcialmente empréstimo",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"dataEmprestimo\": \"2026-09-08\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/emprestimos/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["emprestimos", "1"]
+            }
+          }
+        },
+        {
+          "name": "DELETE - Remover empréstimo",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/emprestimos/2",
+              "host": ["{{baseUrl}}"],
+              "path": ["emprestimos", "2"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
